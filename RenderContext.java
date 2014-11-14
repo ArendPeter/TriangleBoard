@@ -13,11 +13,11 @@ public class RenderContext extends Bitmap{
 	}
 	
 	public void FillShape(int yMin, int yMax){
-		for(int j = yMin; j < yMax; j++){
+		
+		for(int j = Math.max(0,yMin); j < Math.min(m_height,yMax); j++){
 			int xMin = m_scanBuffer[j * 2];
 			int xMax = m_scanBuffer[j * 2 + 1];
-			
-			for(int i = xMin; i < xMax; i++){
+			for(int i = Math.max(0,xMin); i < Math.min(m_width,xMax); i++){
 				DrawPixel(i,j, (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF);
 			}
 		}
@@ -49,8 +49,6 @@ public class RenderContext extends Bitmap{
 			midYVert = temp;
 		}
 		
-		
-		
 		float area = minYVert.TriangleAreaTimesTwo(maxYVert , midYVert);
 		int handedness = area >=0 ? 1 : 0;
 		
@@ -80,13 +78,14 @@ public class RenderContext extends Bitmap{
 			return;
 		
 		float xStep = ((float)xDist)/((float)yDist);
-		float curX = (float)xStart;
-		
-		for(int j = yStart; j < yEnd; j++){
+		float curX = (float)Math.max(0,xStart);
+		for(int j = Math.max(0,yStart); j < Math.min(yEnd,m_height); j++){
 			m_scanBuffer[j * 2 + whichSide] = (int)curX;
 			curX += xStep;
+			if(curX>=m_width){
+				break;
+			}
 		}
-		
 	}
 
 }	
