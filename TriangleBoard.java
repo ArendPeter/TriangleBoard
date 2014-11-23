@@ -4,30 +4,36 @@ public class TriangleBoard{
 	private final float height;
 	private final float triSideLength;
 	private final float triHeight;
-	private final float triOffset;
+	private final float triOffsetY;
+	private final float triOffsetX;
 	private float gapHeight;
 	private float gapWidth;
+	//private float speed;
+	//private int curTri;
 	
 	private Vertex[] triangles;
 	
 	Matrix4f projection;
 	
 	public TriangleBoard(float width, float height, float triSideLength, float gapHeight){
+		//float speed){
 		this.width = width;
 		this.height = height;
 		this.triSideLength = triSideLength;
 		triHeight = (float)(Math.sqrt(3)*triSideLength)/2;
 		this.gapHeight = gapHeight;
 		gapWidth = (float)((2*gapHeight)/Math.sqrt(3));
-		triOffset = (float)(Math.sqrt(3)*gapWidth/4f);
+		triOffsetY = (float)(Math.sqrt(3)*gapWidth/4f);
+		triOffsetX = (float)((gapWidth/2f)+(gapHeight/(2*Math.sqrt(3))));
 		generateTriangles();
 	}
 	
 	private void generateTriangles(){
 		int numRows = (int)Math.ceil(height/(triHeight+gapHeight))-1;
-		int numCols = (int)(Math.ceil(width/((triSideLength/2f)+gapWidth)));
+		int numCols = (int)(Math.ceil(width/((triSideLength/2f)+triOffsetX)));
 		triangles = new Vertex[(numRows * numCols * 3)];
 		
+		//curTri = (int)Math.random(numRows * numCols);
 		int index = 0;
 		float xx = -width/2;
 		float yy = height/2;
@@ -35,18 +41,14 @@ public class TriangleBoard{
 		boolean startup = up;
 		for(int i=0;i<numRows;i++){
 			for(int j=0;j<numCols;j++){
-				addTriangle(index, xx, yy + (gapHeight/2) - (up?triOffset:0), up);
-				if(up)
-					xx+=gapWidth + triSideLength/2f;
-				else
-					xx+=gapWidth + triSideLength/2f;
-				
+				addTriangle(index, xx, yy + (gapHeight/2) - (up?triOffsetY:0), up);
+				xx+=triOffsetX + triSideLength/2f;
 				up = !up;
 				index+=3;
 			}
 			up=!startup;
 			startup = up;
-			yy-=(triHeight + gapHeight + triOffset);
+			yy-=(triHeight + gapHeight + triOffsetY);
 			xx=-width/2;
 		}
 	}
