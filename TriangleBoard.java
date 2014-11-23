@@ -33,7 +33,7 @@ public class TriangleBoard{
 	}
 	
 	private void generateTriangles(){
-		int numRows = (int)Math.ceil(height/(triHeight+gapHeight))-1;
+		int numRows = (int)Math.ceil(height/(triHeight+gapHeight));
 		int numCols = (int)(Math.ceil(width/((triSideLength/2f)+triOffsetX)));
 		triangles = new Vertex[(numRows * numCols * 3)];
 		triCenter = new Vertex[numRows*numCols];
@@ -53,7 +53,7 @@ public class TriangleBoard{
 			}
 			up=!startup;
 			startup = up;
-			yy-=(triHeight + gapHeight + triOffsetY);
+			yy-=(triHeight + gapHeight);
 			xx=-width/2;
 		}
 		
@@ -65,15 +65,16 @@ public class TriangleBoard{
 	}
 	
 	private void addTriangle(int index, float x, float y, boolean up){
-		triCenter[index/3] = new Vertex(x,y,0);
+		float z = (float)(Math.pow(x,2)/(-2f));
+		triCenter[index/3] = new Vertex(x,y,z);
 		if(up){
-			triangles[index    ] = new Vertex( x, y, 0);
-			triangles[index + 1] = new Vertex( x - triSideLength/2f, y - triHeight, 0);
-			triangles[index + 2] = new Vertex( x + triSideLength/2f, y - triHeight, 0);
+			triangles[index    ] = new Vertex( x, y, z);
+			triangles[index + 1] = new Vertex( x - triSideLength/2f, y - triHeight, z);
+			triangles[index + 2] = new Vertex( x + triSideLength/2f, y - triHeight, z);
 		}else{
-			triangles[index    ] = new Vertex( x - (triSideLength/2f), y, 0);
-			triangles[index + 1] = new Vertex( x + (triSideLength/2f), y, 0);
-			triangles[index + 2] = new Vertex( x, y - triHeight, 0);
+			triangles[index    ] = new Vertex( x - (triSideLength/2f), y, z);
+			triangles[index + 1] = new Vertex( x + (triSideLength/2f), y, z);
+			triangles[index + 2] = new Vertex( x, y - triHeight, z);
 		}
 	}
 	
@@ -82,7 +83,7 @@ public class TriangleBoard{
 		projection = new Matrix4f().InitPerspective((float)Math.toRadians(70.0f),
 			(float)target.GetWidth()/(float)target.GetHeight(), 0.1f, 1000.0f);
 	
-		Matrix4f translation = new Matrix4f().InitTranslation(0.0f,0.0f,3.0f);
+		Matrix4f translation = new Matrix4f().InitTranslation(0.0f,0.0f,5.0f);
 		//Matrix4f transform = projection.Mul(translation);
 		/*Matrix4f screenSpaceTransform = new Matrix4f().InitIdentity().Mul(transform).
 			InitScreenSpaceTransform(target.GetWidth()/2, target.GetHeight()/2);*/
@@ -94,10 +95,10 @@ public class TriangleBoard{
 			triRot[i/3]+=speed;
 			
 			Matrix4f thisTranslate1 = new Matrix4f().InitTranslation(triCenter[i/3].GetX(),
-				triCenter[i/3].GetY(),0.0f);
+				triCenter[i/3].GetY(),triCenter[i/3].GetZ());
 			
 			Matrix4f thisTranslate2 = new Matrix4f().InitTranslation(-triCenter[i/3].GetX(),
-				-triCenter[i/3].GetY(),0.0f);
+				-triCenter[i/3].GetY(),-triCenter[i/3].GetZ());
 			
 			Matrix4f transform = projection.Mul(translation.Mul(
 				thisTranslate1.Mul(thisRotation.Mul(thisTranslate2))));

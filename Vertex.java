@@ -3,6 +3,7 @@ public class Vertex{
 	
 	public float GetX(){ return m_pos.GetX(); }
 	public float GetY(){ return m_pos.GetY(); }
+	public float GetZ(){ return m_pos.GetZ(); }
 	
 	public Vertex(float x, float y, float z){
 		m_pos = new Vector4f(x, y, z, 1);
