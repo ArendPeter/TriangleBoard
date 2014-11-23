@@ -92,6 +92,7 @@ public class Matrix4f{
 		return this;
 	}
 	
+	
 	public Vector4f Transform(Vector4f r){
 		return new Vector4f(
 			m[0][0] * r.GetX() + m[0][1] * r.GetY() + m[0][2] * r.GetZ() + m[0][3] * r.GetW(),
