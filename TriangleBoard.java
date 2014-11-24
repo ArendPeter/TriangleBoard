@@ -37,6 +37,7 @@ public class TriangleBoard{
 		int numCols = (int)(Math.ceil(width/((triSideLength/2f)+triOffsetX)));
 		triangles = new Vertex[(numRows * numCols * 3)];
 		triCenter = new Vertex[numRows*numCols];
+		triRot = new float[numRows * numCols];
 		curTri = (int)(Math.random() * numRows * numCols);
 		int index = 0;
 		float xx = -width/2;
@@ -57,16 +58,21 @@ public class TriangleBoard{
 			xx=-width/2;
 		}
 		
-		triRot = new float[numRows * numCols];
-		for(int i=0;i<triRot.length;i++){
-			//triRot[i] = (float)(Math.random()*2*Math.PI);
-			triRot[i]=triCenter[i].GetX()/4f + triCenter[i].GetY()/5f;
-		}
+		//for(int i=0;i<triRot.length;i++){
+			/*random
+			triRot[i] = (float)(Math.random()*2*Math.PI);*/
+			/*offset
+			triRot[i]=triCenter[i].GetX()/4f + triCenter[i].GetY()/5f;*/
+			/*curve*/
+		//}
 	}
 	
 	private void addTriangle(int index, float x, float y, boolean up){
 		float z = (float)(Math.pow(x,2)/(-2f));
 		triCenter[index/3] = new Vertex(x,y,z);
+		triRot[index/3] = (float)Math.atan(-Math.pow(x,2));
+		if(x<0)	triRot[index/3]=-triRot[index/3];
+		
 		if(up){
 			triangles[index    ] = new Vertex( x, y, z);
 			triangles[index + 1] = new Vertex( x - triSideLength/2f, y - triHeight, z);
